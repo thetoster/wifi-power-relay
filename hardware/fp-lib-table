@@ -1,0 +1,7 @@
+(fp_lib_table
+  (lib (name OMRON-RELAY)(type KiCad)(uri ${KIPRJMOD}/OMRON-RELAY.pretty)(options "")(descr ""))
+  (lib (name AIMTEC-AC-DC)(type KiCad)(uri ${KIPRJMOD}/AIMTEC-AC-DC.pretty)(options "")(descr ""))
+  (lib (name FerrorCore)(type KiCad)(uri ${KIPRJMOD}/FerrorCore.pretty)(options "")(descr ""))
+  (lib (name NINIGI)(type KiCad)(uri ${KIPRJMOD}/NINIGI.pretty)(options "")(descr ""))
+  (lib (name SolderWirePad)(type KiCad)(uri ${KIPRJMOD}/SolderWirePad.pretty)(options "")(descr ""))
+)

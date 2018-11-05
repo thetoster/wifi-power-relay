@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name OMRON-RELAY)(type Legacy)(uri /home/bartlomiejzarnowski/Listwa-Wifi/OMRON-RELAY.lib)(options "")(descr ""))
+  (lib (name AIMTEC-AC-DC)(type Legacy)(uri /home/bartlomiejzarnowski/Listwa-Wifi/AIMTEC-AC-DC.lib)(options "")(descr ""))
+  (lib (name Nexperia)(type Legacy)(uri /home/bartlomiejzarnowski/Listwa-Wifi/Nexperia.lib)(options "")(descr ""))
+  (lib (name NXP-Semiconductors)(type Legacy)(uri /home/bartlomiejzarnowski/Listwa-Wifi/NXP-Semiconductors.lib)(options "")(descr ""))
+)
