@@ -1,0 +1,7 @@
+#Platform IO
+.pio
+
+#IDE
+.cproject
+.project
+.settings
