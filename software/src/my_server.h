@@ -30,11 +30,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  WifiServer.h
- Created on: Dec 29, 2017
+ Created on: 27 Nov 2019
  Author: Bartłomiej Żarnowski (Toster)
  */
 #ifndef WifiServer_hpp
 #define WifiServer_hpp
+#include <Arduino.h>
 
 class MyServer {
   public:
@@ -44,10 +45,11 @@ class MyServer {
 
     String getServerIp();
     String getPassword();
-    String getStatus();
     void restart();
     void switchToConfigMode();
     void update();
+    void begin();
+    void end();
   private:
     bool needsConfig;
 

@@ -17,6 +17,8 @@ struct SavedPrefs {
     char password[64];  //AP password
     char inNetworkName[20];
     uint8_t securityKey[32];   //used to get signed operations
+    char username[20];
+    char userPassword[32];
 };
 
 class Prefs {

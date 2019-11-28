@@ -7,6 +7,8 @@
 
 #include <prefs.h>
 #include <EEPROM.h>
+#include <algorithm>
+#include <iterator>
 
 Prefs prefs;
 
@@ -24,7 +26,6 @@ void Prefs::load() {
   Serial.println(isZeroPrefs());
   Serial.flush();
 
-  //if (storage.crc != expectedCrc || isZeroPrefs()) {
   if (not hasPrefs()) {
     defaultValues();
   }
@@ -35,23 +36,16 @@ bool Prefs::hasPrefs() {
 }
 
 bool Prefs::isZeroPrefs() {
-  const uint8_t* data = (uint8_t*)&storage;
-  for(size_t t = 0; t < sizeof(storage); t++) {
-    if (*data != 0) {
-      return false;
-    }
-    data++;
-  }
-  return true;
+  const uint8_t* data = reinterpret_cast<uint8_t*>(&storage);
+  const uint8_t* dataEnd = data + sizeof(storage);
+  return std::count(data, dataEnd, 0) == sizeof(storage);
 }
 
 void Prefs::defaultValues() {
   Serial.println("Reset prefs to default");
-  memset(&storage.ssid[0], 0, sizeof(storage.ssid));
-  memset(&storage.password[0], 0, sizeof(storage.password));
-  memset(&storage.inNetworkName[0], 0, sizeof(storage.inNetworkName));
-  strcpy(&storage.inNetworkName[0], "Relay");
-  memset(&storage.securityKey[0], 0, sizeof(storage.securityKey));
+  storage = {};
+  std::string("Relay").copy(storage.inNetworkName, sizeof(storage.inNetworkName));
+  std::string("Lampster").copy(storage.username, sizeof(storage.username));
 }
 
 void Prefs::save() {

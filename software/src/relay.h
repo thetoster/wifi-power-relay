@@ -28,4 +28,6 @@ class Relay {
   void changeRelay(bool turnOn);
 };
 
+extern Relay relay;
+
 #endif /* SRC_RELAY_H_ */

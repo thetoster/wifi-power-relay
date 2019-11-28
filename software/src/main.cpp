@@ -16,8 +16,8 @@
 #include <ESPAsyncWebServer.h>
 #include "prefs.h"
 #include "relay.h"
+#include "my_server.h"
 
-AsyncWebServer server(80);
 Relay relay(10, 11, 12);
 
 const char *ssid = "YOUR_SSID";
@@ -29,26 +29,7 @@ const char *hostName = "blabla";
 void notFound(AsyncWebServerRequest *request) {
   request->send(404, "text/plain", "Not found");
 }
-
-void enableOTA() {
-  // Send OTA events to the browser
-  //  ArduinoOTA.onStart([]() {  });
-  //  ArduinoOTA.onEnd([]() {  });
-  //  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-  //    char p[32];
-  //    sprintf(p, "Progress: %u%%\n", (progress / (total / 100)));
-  //  });
-  //  ArduinoOTA.onError([](ota_error_t error) {
-  //    if (error == OTA_AUTH_ERROR)
-  //    else if (error == OTA_BEGIN_ERROR)
-  //    else if (error == OTA_CONNECT_ERROR)
-  //    else if (error == OTA_RECEIVE_ERROR)
-  //    else if (error == OTA_END_ERROR)
-  //  });
-  ArduinoOTA.setHostname(hostName);
-  ArduinoOTA.begin();
-}
-
+/*
 void setupRelayPages() {
   server.on("/turnOn", HTTP_POST, [&](AsyncWebServerRequest *request) {
     relay.turnOn();
@@ -69,7 +50,7 @@ void setupRelayPages() {
     request->send(200, "text/plain", relay.isOn() ? "ON" : "OFF");
   });
 }
-
+*/
 void setup() {
   Serial.begin(115200);
 
@@ -88,19 +69,18 @@ void setup() {
     Serial.println(WiFi.localIP());
   }
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "text/plain", "commands: \n"
-        "POST: /turnOn, /turnOff, /toggle, /factoryReset, /configure \n"
-        "GET: /state");
-  });
-  setupRelayPages();
+//  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+//    request->send(200, "text/plain", "commands: \n"
+//        "POST: /turnOn, /turnOff, /toggle, /factoryReset, /configure \n"
+//        "GET: /state");
+//  });
+//  setupRelayPages();
+//
 
-  server.onNotFound([](AsyncWebServerRequest *request) {
-    request->send(404, "text/plain", "Not found");
-  });
-
-  enableOTA();
-  server.begin();
+  myServer.begin();
 }
 
-void loop() { ArduinoOTA.handle(); }
+void loop() {
+  myServer.update();
+  ArduinoOTA.handle();
+}
