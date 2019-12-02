@@ -48,12 +48,10 @@ class MyServer {
     void restart();
     void switchToConfigMode();
     void update();
-    void begin();
-    void end();
   private:
     bool needsConfig;
 
-    void generateRandomPassword();
+    void generatePasswords();
     void enableSoftAP();
     void connectToAccessPoint();
 };

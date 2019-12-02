@@ -66,10 +66,12 @@ namespace {
 
 bool checkAuth(AsyncWebServerRequest& request) {
   if (not request.authenticate(prefs.storage.username, prefs.storage.userPassword, www_realm,
-                               true)) {
+                               false)) {
+    Serial.println("requestAuthentication");
     request.requestAuthentication(www_realm, true);
     return false;
   };
+  Serial.println("CheckAuth: OK");
   return true;
 }
 
@@ -296,6 +298,8 @@ void handleRoot(AsyncWebServerRequest* request) {
   String html = FPSTR(rootHtml);
 
   // network
+  Serial.print("SSID:");
+  Serial.println(prefs.storage.ssid);
   html.replace("${ssid}", prefs.storage.ssid);
   html.replace("${inNetworkName}", prefs.storage.inNetworkName);
   html.replace("${username}", prefs.storage.username);
@@ -303,8 +307,8 @@ void handleRoot(AsyncWebServerRequest* request) {
                toHexString(prefs.storage.securityKey, sizeof(prefs.storage.securityKey)));
 
   request->send(200, "text/html", html);
-  delay(100);
-  request->client()->stop();
+//  delay(100);
+//  request->client()->stop();
 }
 
 void handleUpdate(AsyncWebServerRequest* request) {
@@ -367,10 +371,6 @@ MyServer::MyServer() : needsConfig(true) {
   //  httpServer.collectHeaders(headerkeys, headerkeyssize);
 }
 
-void MyServer::begin() { httpServer.begin(); }
-
-void MyServer::end() { httpServer.end(); }
-
 void MyServer::switchToConfigMode() {
   WiFi.setAutoReconnect(false);
   WiFi.disconnect(false);
@@ -378,7 +378,7 @@ void MyServer::switchToConfigMode() {
   WiFi.enableSTA(false);
   delay(500);
   memset(prefs.storage.ssid, 0, sizeof(prefs.storage.ssid));
-  generateRandomPassword();
+  generatePasswords();
   needsConfig = true;
   enableSoftAP();
 }
@@ -390,27 +390,10 @@ void MyServer::connectToAccessPoint() {
   WiFi.setAutoConnect(true);
 }
 
-void MyServer::generateRandomPassword() {
-  std::fill(std::begin(prefs.storage.userPassword), std::end(prefs.storage.userPassword), 0);
+void MyServer::generatePasswords() {
   std::fill(std::begin(prefs.storage.password), std::end(prefs.storage.password), 0);
-  constexpr int PASS_SIZE = 8;
-  std::generate(std::begin(prefs.storage.userPassword),
-                std::begin(prefs.storage.userPassword) + PASS_SIZE, []() {
-                  long r = ESP8266TrueRandom.random(10);
-                  if (r < 3) {
-                    r = ESP8266TrueRandom.random('Z' - 'A') + 'A';
-
-                  } else if (r < 6) {
-                    r = ESP8266TrueRandom.random('9' - '0') + '0';
-
-                  } else {
-                    r = ESP8266TrueRandom.random('z' - 'a') + 'a';
-                  }
-                  return static_cast<char>(r);
-                });
-
-  std::copy(std::begin(prefs.storage.userPassword),
-            std::begin(prefs.storage.userPassword) + PASS_SIZE, std::begin(prefs.storage.password));
+  std::fill(std::begin(prefs.storage.userPassword), std::end(prefs.storage.userPassword), 0);
+  std::string("Karamba!").copy(prefs.storage.userPassword, sizeof(prefs.storage.userPassword));
 
   std::generate(std::begin(prefs.storage.securityKey), std::end(prefs.storage.securityKey),
                 []() { return static_cast<uint8_t>(ESP8266TrueRandom.random(256)); });
@@ -439,8 +422,13 @@ void MyServer::restart() {
 
   needsConfig = not prefs.hasPrefs();
   if (needsConfig) {
-    generateRandomPassword();
+    generatePasswords();
     enableSoftAP();
+    Serial.println("AP Mode");
+    Serial.print("User:");
+    Serial.println(prefs.storage.username);
+    Serial.print("Pass:");
+    Serial.println(prefs.storage.userPassword);
 
   } else {
     connectToAccessPoint();

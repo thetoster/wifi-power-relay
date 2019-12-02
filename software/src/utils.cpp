@@ -28,6 +28,7 @@ bool handleSingleHex(const char& c, uint8_t& val) {
 
 String toHexString(uint8_t* data, int len) {
   String result;
+  result.reserve(2 * len + 1);
   for (int t = 0; t < len; t++) {
     uint8_t b = (data[t] >> 4) & 0x0F;
     char c = (b < 0xA) ? '0' + b : 'A' + b - 0xA;
