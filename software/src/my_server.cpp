@@ -204,7 +204,6 @@ bool isMemZero(T& ptr) {
 }
 
 void applyNetConfig(SavedPrefs& p, bool& changed, bool& doNetRestart) {
-
   if (not equalAsStr(prefs.storage.inNetworkName, p.inNetworkName)) {
     std::copy(std::begin(p.inNetworkName), std::end(p.inNetworkName),
               std::begin(prefs.storage.inNetworkName));
@@ -307,8 +306,6 @@ void handleRoot(AsyncWebServerRequest* request) {
                toHexString(prefs.storage.securityKey, sizeof(prefs.storage.securityKey)));
 
   request->send(200, "text/html", html);
-//  delay(100);
-//  request->client()->stop();
 }
 
 void handleUpdate(AsyncWebServerRequest* request) {
@@ -364,11 +361,6 @@ MyServer::MyServer() : needsConfig(true) {
   });
   httpServer.onNotFound(
       [](AsyncWebServerRequest* request) { request->send(404, "text/plain", "Not found"); });
-
-  //  const char* headerkeys[] = {"nonce", "HMac"};
-  //  size_t headerkeyssize = sizeof(headerkeys) / sizeof(char*);
-  // ask server to track these headers
-  //  httpServer.collectHeaders(headerkeys, headerkeyssize);
 }
 
 void MyServer::switchToConfigMode() {
@@ -384,6 +376,10 @@ void MyServer::switchToConfigMode() {
 }
 
 void MyServer::connectToAccessPoint() {
+  WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& arg) {
+    Serial.print("New IP:");
+    Serial.println(arg.ip.toString());
+  });
   WiFi.softAPdisconnect(false);
   WiFi.begin(prefs.storage.ssid, prefs.storage.password);
   WiFi.setAutoReconnect(true);
@@ -440,4 +436,6 @@ void MyServer::restart() {
   MDNS.addService("http", "tcp", 80);
 }
 
-void MyServer::update() { MDNS.update(); }
+void MyServer::update() {
+  MDNS.update();
+}

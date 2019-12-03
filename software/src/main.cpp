@@ -20,35 +20,8 @@
 
 Relay relay(D5, D6, D7);
 
-const char *ssid = "YOUR_SSID";
-const char *password = "YOUR_PASSWORD";
-
-const char *PARAM_MESSAGE = "message";
-const char *hostName = "blabla";
-
 void notFound(AsyncWebServerRequest *request) { request->send(404, "text/plain", "Not found"); }
-/*
-void setupRelayPages() {
-  server.on("/turnOn", HTTP_POST, [&](AsyncWebServerRequest *request) {
-    relay.turnOn();
-    request->send(200, "text/plain", "OK");
-  });
 
-  server.on("/turnOff", HTTP_POST, [&](AsyncWebServerRequest *request) {
-    relay.turnOff();
-    request->send(200, "text/plain", "OK");
-  });
-
-  server.on("/toggle", HTTP_POST, [&](AsyncWebServerRequest *request) {
-    relay.toggle();
-    request->send(200, "text/plain", "OK");
-  });
-
-  server.on("/state", HTTP_GET, [&](AsyncWebServerRequest *request) {
-    request->send(200, "text/plain", relay.isOn() ? "ON" : "OFF");
-  });
-}
-*/
 void setup() {
   Serial.begin(115200);
 
@@ -67,13 +40,6 @@ void setup() {
   }
   relay.turnOff();
   myServer.restart();
-
-  //  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-  //    request->send(200, "text/plain", "commands: \n"
-  //        "POST: /turnOn, /turnOff, /toggle, /factoryReset, /configure \n"
-  //        "GET: /state");
-  //  });
-  //  setupRelayPages();
 }
 
 void loop() {
